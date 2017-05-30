@@ -3,6 +3,6 @@
   connection: local
   gather_facts: False
   become: yes
-  no_log: True
+  no_log: False
   roles:
-    - { role: jfrog, tags: [ "{{comman }} " ] }
+    - { role: jfrog , tags: ["{{ comman }}"]}
