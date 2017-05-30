@@ -1,0 +1,12 @@
+---
+
+
+- include_vars: vars.yml
+
+- name: hostname details
+  shell: curl -u "{{ username }}":"{{password}}" -X PUT "http://{{ ipaddress }}:{{ port }}/artifactory/localrepo/{{env}}/{{majorversion}}.{{minorversion}}.{{buildnumber}}/counterwebapp.war" -T /vagrant/jenkins/workspace/counterwebApp/ctco-assignment/target/CounterWebApp.war
+  tags: upload
+
+- name: hostname details
+  command: chdir=/vagrant/jenkins/workspace/counterwebApp/ curl -u "{{ username }}":"{{password}}" -O "http://{{ ipaddress }}:{{ port }}/artifactory/localrepo/{{env}}/{{majorversion}}.{{minorversion}}.{{buildnumber}}/counterwebapp.war"
+  tags: download
