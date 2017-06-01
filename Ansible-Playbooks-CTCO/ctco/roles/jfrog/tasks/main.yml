@@ -3,10 +3,11 @@
 
 - include_vars: vars.yml
 
-- name: hostname details
-  shell: curl -u "{{ username }}":"{{password}}" -X PUT "http://{{ ipaddress }}:{{ port }}/artifactory/sampleweb_mvnrepo/{{env}}/{{buildnumber}}/simpleweb-{{env}}.war" -T /home/kishore_donekal/CTCO-Assignment/simple-web-app/target/simple-web-app.war
-  tags: upload
-
-- name: hostname details
-  command: chdir=/home/kishore_donekal/weblocation curl -u "{{ username }}":"{{password}}" -O "http://{{ ipaddress }}:{{ port }}/artifactory/sampleweb_mvnrepo/{{env}}/{{buildnumber}}/simpleweb-{{env}}.war"
-  tags: download
+- name: Upload the Artifacts to Jfrog repo
+  shell: /usr/local/go/bin/jfrog rt u --url http://{{ ipaddress }}:{{ port }}/artifactory/sampleweb_mvnrepo/ --user {{ username }} --password {{ password }} {{destlocation }}/simple-web-app.war {{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war
+  become: yes
+  become_user: root
+  when: common == "upload"
+- name: Download the Artifacts from Jfrog repo
+  shell: /usr/local/go/bin/jfrog rt dl --url http://{{ ipaddress }}:{{ port }}/artifactory/ --user {{ username }} --password {{ password }} sampleweb_mvnrepo/{{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war {{ downloadpath }}
+  when: common == "download"

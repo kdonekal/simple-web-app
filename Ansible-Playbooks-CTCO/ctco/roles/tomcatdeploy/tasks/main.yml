@@ -1,0 +1,10 @@
+---
+- name: Stop Tomcat
+  service: name=tomcat state=stopped enabled=yes
+
+- name: copy the war file to tomcat webapps folder
+  copy: src={{ deployfile }} dest=/usr/share/tomcat/webapps/ owner=root mode=777
+
+- name: Start Tomcat
+  service: name=tomcat state=started enabled=yes
+
