@@ -3,19 +3,22 @@
 
 - include_vars: vars.yml
 
+#JFrog Artifactory Repository utility task section for upload the artifact via JFROG CLI
 - name: Upload the Artifacts to Jfrog repo
   shell: /usr/local/go/bin/jfrog rt u --url http://{{ ipaddress }}:{{ jfrogport }}/artifactory/sampleweb_mvnrepo/ --user {{ username }} --password {{ password }} {{destlocation }}/simple-web-app.war {{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war
-  become: yes
-  become_user: root
   when: common == "upload"
+
+#JFrog Artifactory Repository utility task section for download the artifact via JFROG CLI
 - name: Download the Artifacts from Jfrog repo
   shell: /usr/local/go/bin/jfrog rt dl --url http://{{ ipaddress }}:{{ jfrogport }}/artifactory/ --user {{ username }} --password {{ password }} sampleweb_mvnrepo/{{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war {{ downloadpath }}
   when: common == "download"
 
+#Nexus Repository utility task section for upload the artifact via NEXUS REST API
 - name: Upload the Artifacts to Nexus repo
   shell: curl -v -u {{ username }}:{{ password }} --upload-file {{destlocation }}/simple-web-app.war http://{{ ipaddress }}:{{ nexusport }}/nexus/content/repositories/sampleweb_mvnrepo/{{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war
   when: common == "upload"
 
+#Nexus Repository utility task section for download the artifact via NEXUS REST API
 - name: Download the Artifacts from Nexus repo
-  shell: curl -u{{ username }}:{{ password }} -O http://23.251.156.10:8081/nexus/content/repositories/sampleweb_mvnrepo/{{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war
+  shell: curl -u{{ username }}:{{ password }} -O http://{{ ipaddress }}:{{ nexusport }}/nexus/content/repositories/sampleweb_mvnrepo/{{ env }}/{{ buildnumber }}/simple-web-{{ env }}.war
   when: common == "download"
