@@ -1,0 +1,28 @@
+node('master') {
+   def mvnHome
+   stage('Checkout') { // for display purposes
+      // Getting code from GitHub repository
+      git 'https://github.com/kdonekal/simple-web-app.git'
+      // Get the Maven tool.
+      // ** NOTE: This 'Maven_3.3.9' Maven tool must be configured
+      // **       in the global configuration.           
+      MAVEN_HOME = tool 'Maven_3.3.9'
+   }
+   stage('Build') {
+      // Run the maven build
+      if (isUnix()) {
+         sh "'${MAVEN_HOME}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+      } else {
+         bat(/"${MAVEN_HOME}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+      }
+   }
+   stage('Results') {
+      // Publish the test results
+      junit '**/target/surefire-reports/TEST-*.xml'
+      archive 'target/*.jar'
+   }
+   stage('UploadArtifactsandDeploy') {
+      // Invoking the artifact upload job followed by the deployment
+      build job: 'Upstream-Dev-WebApp', parameters: [string(name: 'Environment', value: 'Dev')]
+   }
+}
