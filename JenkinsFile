@@ -1,9 +1,9 @@
-pipeline {
-    agent {master}
-    triggers {
-        cron('H 4/* 0 0 1-5')
-    }
-   stages {
+// pipeline {
+   // agent {master}
+   // triggers {
+       // cron('H 4/* 0 0 1-5')
+   // }
+node('master') {
    def mvnHome
    stage('Checkout') { // for display purposes
       // Getting code from GitHub repository
@@ -37,6 +37,5 @@ pipeline {
    stage('UploadandDownloadArtifactstoQAEnv.') {
       // Invoking the artifact upload followed by the download for QA environment followed by the deployment
       build job: 'Upstream-QA-WebApp', parameters: [string(name: 'Source-Environment', value: 'Dev'), string(name: 'Environment', value: 'QA')]
-   }
    }
 }
