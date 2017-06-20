@@ -1,10 +1,10 @@
-node('master') {
-   def mvnHome
-   pipeline {
-    agent any
+pipeline {
+    agent master
     triggers {
         cron('H 4/* 0 0 1-5')
     }
+   stages {
+   def mvnHome
    stage('Checkout') { // for display purposes
       // Getting code from GitHub repository
       git 'https://github.com/kdonekal/simple-web-app.git'
