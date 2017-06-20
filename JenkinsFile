@@ -36,7 +36,7 @@ node('master') {
    }
    stage('JMeterScriptsExecution') {
       // Invoking the JMeter Scripts followed by the deployment
-      build job: 'Jmeter-Trigger'
+      build job: 'Jmeter-Trigger', wait: false
    }
    stage('UploadandDownloadArtifactstoQAEnv.') {
       // Invoking the artifact upload followed by the download for QA environment followed by the deployment
