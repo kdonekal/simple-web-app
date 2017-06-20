@@ -34,6 +34,10 @@ node('master') {
       // Invoking the artifact upload job followed by the deployment
       build job: 'Upstream-Dev-WebApp', parameters: [string(name: 'Environment', value: 'Dev')]
    }
+   stage('JMeterScriptsExecution') {
+      // Invoking the JMeter Scripts followed by the deployment
+      build job: 'Jmeter-Trigger'
+   }
    stage('UploadandDownloadArtifactstoQAEnv.') {
       // Invoking the artifact upload followed by the download for QA environment followed by the deployment
       build job: 'Upstream-QA-WebApp', parameters: [string(name: 'Source-Environment', value: 'Dev'), string(name: 'Environment', value: 'QA')]
