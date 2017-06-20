@@ -1,5 +1,10 @@
 node('master') {
    def mvnHome
+   pipeline {
+    agent any
+    triggers {
+        cron('H 4/* 0 0 1-5')
+    }
    stage('Checkout') { // for display purposes
       // Getting code from GitHub repository
       git 'https://github.com/kdonekal/simple-web-app.git'
@@ -16,10 +21,10 @@ node('master') {
          bat(/"${MAVEN_HOME}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
       }
    }
-   stage 'SonarQube Analysis'
-    withSonarQubeEnv {
-        sh "./gradlew clean sonarqube"
-    }
+   // stage 'SonarQube Analysis'
+    // withSonarQubeEnv {
+       // sh "./gradlew clean sonarqube"
+    // }
    stage('Results') {
       // Publish the test results
       junit '**/target/surefire-reports/TEST-*.xml'
@@ -28,5 +33,10 @@ node('master') {
    stage('UploadArtifactsandDeploy') {
       // Invoking the artifact upload job followed by the deployment
       build job: 'Upstream-Dev-WebApp', parameters: [string(name: 'Environment', value: 'Dev')]
+   }
+   stage('UploadandDownloadArtifactstoQAEnv.') {
+      // Invoking the artifact upload followed by the download for QA environment followed by the deployment
+      build job: 'Upstream-QA-WebApp', parameters: [string(name: 'Source-Environment', value: 'Dev'), string(name: 'Environment', value: 'QA')]
+   }
    }
 }
